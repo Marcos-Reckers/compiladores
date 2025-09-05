@@ -1,0 +1,10 @@
+// Teste 8: Comando condicional com senao
+funcao -> inteiro com x := inteiro := [
+    se (x > 0) [
+        x := x + 1
+    ] senao [
+        x := x - 1
+    ]
+    retorna x := inteiro
+]
+;

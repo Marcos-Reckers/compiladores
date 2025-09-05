@@ -1,0 +1,27 @@
+// Teste 14: Estruturas de controle aninhadas complexas
+algoritmo_complexo -> inteiro com limite := inteiro := [
+    var i := inteiro com 0
+    var j := inteiro
+    var resultado := inteiro com 0
+    
+    enquanto (i < limite) [
+        j := 0
+        enquanto (j < i) [
+            se (i % 2 == 0) [
+                se (j % 2 == 1) [
+                    resultado := resultado + i * j
+                ] senao [
+                    resultado := resultado - j
+                ]
+            ] senao [
+                se (j < i / 2) [
+                    resultado := resultado + j
+                ]
+            ]
+            j := j + 1
+        ]
+        i := i + 1
+    ]
+    retorna resultado := inteiro
+]
+;

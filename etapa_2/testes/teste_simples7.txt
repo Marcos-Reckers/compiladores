@@ -1,0 +1,8 @@
+// Teste 7: Comando condicional
+funcao -> inteiro com x := inteiro := [
+    se (x > 0) [
+        x := x + 1
+    ]
+    retorna x := inteiro
+]
+;

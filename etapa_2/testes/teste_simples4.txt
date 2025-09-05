@@ -1,0 +1,5 @@
+// Teste 4: Função simples sem parâmetros
+funcao -> inteiro := [
+    retorna 42 := inteiro
+]
+;

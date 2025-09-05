@@ -1,0 +1,7 @@
+// Teste 12: Expressões lógicas
+validar -> inteiro com a := inteiro, b := inteiro := [
+    var resultado := inteiro
+    resultado := (a > b) & (a < 100) | (b == 0)
+    retorna resultado := inteiro
+]
+;

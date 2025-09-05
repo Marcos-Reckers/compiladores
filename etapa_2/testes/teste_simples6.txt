@@ -1,0 +1,9 @@
+// Teste 6: Bloco de comandos com variáveis e atribuição
+funcao -> inteiro := [
+    var x := inteiro com 10
+    var y := decimal
+    x := 20
+    y := 3.14
+    retorna x := inteiro
+]
+;

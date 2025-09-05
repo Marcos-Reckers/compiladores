@@ -1,0 +1,7 @@
+// Teste 13: Operadores unários
+processar -> inteiro com x := inteiro := [
+    var resultado := inteiro
+    resultado := -x + !0
+    retorna resultado := inteiro
+]
+;

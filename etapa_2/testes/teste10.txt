@@ -1,0 +1,19 @@
+// Teste 10: Blocos aninhados e múltiplas declarações
+processamento -> inteiro := [
+    var contador := inteiro com 0
+    var soma := decimal com 0.0
+    enquanto (contador < 5) [
+        se (contador % 2 == 0) [
+            [
+                var temp := decimal
+                temp := contador * 1.5
+                soma := soma + temp
+            ]
+        ] senao [
+            soma := soma + contador
+        ]
+        contador := contador + 1
+    ]
+    retorna soma > 10.0 := inteiro
+]
+;

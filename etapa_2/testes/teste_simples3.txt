@@ -1,0 +1,3 @@
+// Teste 3: Declaração de variável com inicialização
+var x := inteiro com 42
+;

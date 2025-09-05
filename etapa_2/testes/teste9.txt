@@ -1,0 +1,13 @@
+// Teste 9: Chamadas de função e operadores relacionais/lógicos
+comparar -> inteiro com x := decimal, y := decimal := [
+    var flag1 := inteiro
+    var flag2 := inteiro
+    flag1 := x <= y
+    flag2 := x >= y
+    se (flag1 & flag2) [
+        retorna avaliar(1, 2, 3) := inteiro
+    ] senao [
+        retorna x == y | x != y := inteiro
+    ]
+]
+;

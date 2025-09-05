@@ -1,0 +1,5 @@
+// Teste 5: Função com parâmetros
+funcao -> inteiro com x := inteiro, y := decimal := [
+    retorna x := inteiro
+]
+;

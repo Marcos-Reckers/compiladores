@@ -1,9 +1,9 @@
 %{
-#include "tokens.h"
+#include "parser.tab.h"
 %}
 
 %option yylineno
-%option noyywrap
+%option noyywrap noinput nounput
 
 %%
 

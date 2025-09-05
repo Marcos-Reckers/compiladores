@@ -1,0 +1,27 @@
+// Teste 15: Expressões matemáticas complexas com múltiplos operadores
+calculo_avancado -> decimal com x := decimal com y := decimal := [
+    var temp1 := decimal com (x * 2.5 + y / 3.0) * (x - y);
+    var temp2 := decimal com x * x + 2 * x * y + y * y;
+    var temp3 := decimal com (temp1 + temp2) / (x + y + 1.0);
+    
+    se (temp3 > 0.0) [
+        temp3 := temp3 * (1.0 + x / 100.0);
+    ] senao [
+        temp3 := temp3 * (-1.0 + y / 50.0);
+    ];
+    
+    retorna temp3 := decimal;
+];
+
+// Chamadas de teste com expressões complexas
+main -> inteiro := [
+    var a := decimal com 10.5;
+    var b := decimal com 7.3;
+    var resultado := decimal;
+    
+    resultado := calculo_avancado(a * 2.0, b + a / 2.0);
+    resultado := calculo_avancado(resultado + 1.0, a - b);
+    
+    retorna 0 := inteiro;
+];
+;

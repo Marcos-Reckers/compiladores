@@ -1,0 +1,78 @@
+// Teste 16: Combinação de todas as características da linguagem
+var global1 := inteiro com 100;
+var global2 := decimal com 3.14159;
+
+fibonacci -> inteiro com n := inteiro := [
+    se (n <= 1) [
+        retorna n := inteiro;
+    ] senao [
+        retorna fibonacci(n - 1) + fibonacci(n - 2) := inteiro;
+    ];
+];
+
+processamento_dados -> decimal com valores := inteiro com quantidade := inteiro := [
+    var soma := decimal com 0.0;
+    var media := decimal;
+    var contador := inteiro com 0;
+    
+    enquanto (contador < quantidade) [
+        var fib := inteiro com fibonacci(contador);
+        var peso := decimal com global2 * contador;
+        
+        se (fib % 2 == 0 and contador > 0) [
+            soma := soma + fib * peso;
+        ] senao [
+            se (fib % 3 == 0 or contador == 0) [
+                soma := soma + fib / 2.0;
+            ];
+        ];
+        contador := contador + 1;
+    ];
+    
+    se (quantidade > 0) [
+        media := soma / quantidade;
+    ] senao [
+        media := 0.0;
+    ];
+    
+    retorna media := decimal;
+];
+
+validacao -> inteiro com valor := decimal := [
+    se (valor > global1 and valor < global1 * 2.0) [
+        retorna 1 := inteiro;
+    ] senao [
+        se (valor >= 0.0 and valor <= global1) [
+            retorna 0 := inteiro;
+        ] senao [
+            retorna -1 := inteiro;
+        ];
+    ];
+];
+
+main -> inteiro := [
+    var resultado := decimal;
+    var status := inteiro;
+    var i := inteiro com 0;
+    
+    // Teste com diferentes combinações
+    enquanto (i < 5) [
+        resultado := processamento_dados(i * 10, i + 3);
+        status := validacao(resultado);
+        
+        se (status == 1) [
+            global1 := global1 + 10;
+        ] senao [
+            se (status == 0) [
+                global2 := global2 * 1.1;
+            ] senao [
+                global1 := global1 - 5;
+                global2 := global2 / 1.1;
+            ];
+        ];
+        i := i + 1;
+    ];
+    
+    retorna status := inteiro;
+];
+;

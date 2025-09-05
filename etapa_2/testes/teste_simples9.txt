@@ -1,0 +1,8 @@
+// Teste 9: Comando enquanto
+funcao -> inteiro com x := inteiro := [
+    enquanto (x < 10) [
+        x := x + 1
+    ]
+    retorna x := inteiro
+]
+;

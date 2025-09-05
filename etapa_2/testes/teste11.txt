@@ -1,0 +1,21 @@
+// Teste 11: Programa com múltiplas funções e variáveis globais
+var pi := decimal com 3.14159,
+var contador_global := inteiro com 0,
+
+area_circulo -> decimal com raio := decimal := [
+    retorna pi * raio * raio := decimal
+],
+
+incrementar -> inteiro := [
+    contador_global := contador_global + 1
+    retorna contador_global := inteiro
+],
+
+main -> inteiro := [
+    var area := decimal
+    area := area_circulo(5.0)
+    var num := inteiro
+    num := incrementar()
+    retorna area > 50.0 & num > 0 := inteiro
+]
+;

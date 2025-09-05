@@ -1,0 +1,7 @@
+// Teste 11: Expressões aritméticas complexas
+calcular -> decimal com x := decimal, y := decimal := [
+    var resultado := decimal
+    resultado := x * 2.0 + y / 3.0 - 1.5
+    retorna resultado := decimal
+]
+;

@@ -1,0 +1,6 @@
+// Teste 4: Múltiplos elementos
+var x := inteiro,
+func1 -> decimal := [
+  retorna 3.14 := decimal
+]
+;

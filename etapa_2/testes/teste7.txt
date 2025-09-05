@@ -1,0 +1,18 @@
+// Teste 7: Função com comandos complexos incluindo estruturas de controle
+calculadora -> decimal com valor := decimal := [
+    var resultado := decimal com 0.0
+    var temp := inteiro
+    se (valor > 10.0) [
+        temp := 5
+        resultado := valor * 2.5
+    ] senao [
+        temp := 3
+        resultado := valor + 1.0
+    ]
+    enquanto (temp > 0) [
+        resultado := resultado + 0.1
+        temp := temp - 1
+    ]
+    retorna resultado := decimal
+]
+;

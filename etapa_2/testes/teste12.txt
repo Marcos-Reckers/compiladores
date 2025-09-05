@@ -1,0 +1,10 @@
+// Teste 12: Expressões lógicas complexas e comparações
+logica_complexa -> inteiro com a := inteiro, b := inteiro, c := inteiro := [
+    var resultado := inteiro
+    resultado := (a > b) & (b < c) | (a == c)
+    se (!(a <= b) & (c >= a)) [
+        resultado := resultado | (a != b & b != c)
+    ]
+    retorna resultado := inteiro
+]
+;

@@ -1,0 +1,5 @@
+// Teste 3: Função com parâmetros
+soma -> inteiro com a := inteiro, b := inteiro := [
+  retorna a + b := inteiro
+]
+;

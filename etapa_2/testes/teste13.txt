@@ -1,0 +1,17 @@
+// Teste 13: Chamadas de função sem argumentos e com argumentos múltiplos
+utilitarios -> decimal := [
+    retorna 42.0 := decimal
+],
+
+somar_tres -> inteiro com a := inteiro, b := inteiro, c := inteiro := [
+    retorna a + b + c := inteiro
+],
+
+teste_chamadas -> decimal := [
+    var val1 := decimal
+    var val2 := inteiro
+    val1 := utilitarios()
+    val2 := somar_tres(1, 2, 3)
+    retorna val1 + val2 := decimal
+]
+;

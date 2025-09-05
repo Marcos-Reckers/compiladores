@@ -1,0 +1,9 @@
+// Teste 8: Expressões aritméticas complexas com precedência
+avaliar -> inteiro com a := inteiro, b := inteiro, c := inteiro := [
+    var resultado := inteiro
+    resultado := a * b + c / 2 - 1
+    resultado := (a + b) * (c - 1) % 3
+    resultado := !resultado + -a * +b
+    retorna resultado >= 0 := inteiro
+]
+;
