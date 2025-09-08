@@ -3,7 +3,6 @@ int yylex(void);
 void yyerror (char const *mensagem);
 %}
 
-%token TK_TIPO
 %token TK_VAR
 %token TK_SENAO
 %token TK_DECIMAL
@@ -43,7 +42,7 @@ lista_elementos:
 
 elemento:
     definicao_funcao
-  | declaracao_variavel
+  | declaracao_variavel_global
   ;
 
 definicao_funcao:
@@ -67,7 +66,7 @@ lista_parametros:
 
 parametro:
     TK_ID TK_ATRIB tipo
-    ;
+  ;
 
 bloco_comandos:
     '[' lista_comandos_opt ']'
@@ -85,7 +84,7 @@ lista_comandos:
 
 comando_simples:
     bloco_comandos
-  | declaracao_variavel
+  | declaracao_variavel_local
   | comando_atribuicao
   | chamada_funcao
   | comando_retorno
@@ -93,11 +92,15 @@ comando_simples:
   | comando_enquanto
   ;
 
-declaracao_variavel:
-    TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt
+/* Declaração de variável global (elemento) - SEM inicialização */
+declaracao_variavel_global:
+    TK_VAR TK_ID TK_ATRIB tipo
     ;
 
-inicializacao_opt:
+/* Declaração de variável local (comando simples) - COM inicialização opcional */
+declaracao_variavel_local:
+    TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt
+    ;inicializacao_opt:
     /* vazio */
   | TK_COM literal
   ;

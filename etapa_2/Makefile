@@ -70,8 +70,8 @@ clean:
 
 # Empacotamento para entrega
 package: clean
-	tar cvzf ../$(TARGET).tgz --exclude='.git' --exclude='*.tgz' --exclude='testes' .
-	mv ../$(TARGET).tgz .
+	tar czf /tmp/$(TARGET).tgz *.c *.h *.l *.y Makefile 2>/dev/null || tar czf /tmp/$(TARGET).tgz --exclude='testes' --exclude='.git' --exclude='*.tgz' *
+	mv /tmp/$(TARGET).tgz .
 
 # Instalar dependências (Ubuntu/Debian)
 install-deps:
