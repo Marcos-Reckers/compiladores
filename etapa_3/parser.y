@@ -43,33 +43,29 @@ extern asd_tree_t *arvore; /* raiz global da AST definida em main.c */
 %token <valor_lexico> TK_LI_DECIMAL
 %token TK_ER
 
-%type <node> programa lista_elementos elemento definicao_funcao tipo parametros_opt lista_parametros parametro bloco_comandos lista_comandos_opt lista_comandos comando_simples declaracao_variavel_global declaracao_variavel_local inicializacao_opt literal comando_atribuicao chamada_funcao argumentos_opt lista_argumentos comando_retorno comando_condicional senao_opt comando_enquanto expressao expressao_or expressao_and expressao_eq expressao_rel expressao_add expressao_mul expressao_unaria expressao_primaria
+%type <node> programa lista_elementos_opt lista_elementos elemento definicao_funcao tipo parametros_opt lista_parametros parametro bloco_comandos lista_comandos_opt lista_comandos comando_simples declaracao_variavel_global declaracao_variavel_local inicializacao_opt literal comando_atribuicao chamada_funcao argumentos_opt lista_argumentos comando_retorno comando_condicional senao_opt comando_enquanto expressao expressao_or expressao_and expressao_eq expressao_rel expressao_add expressao_mul expressao_unaria expressao_primaria
 
 %define parse.error verbose
 
 %%
 
 programa:
-  /* vazio */                { $$ = NULL; }
-  | lista_elementos ';'       { $$ = $1; arvore = $1; }
+    lista_elementos_opt ';'   { $$ = $1; arvore = $1; }
+  ;
+
+lista_elementos_opt:
+    /* vazio */               { $$ = NULL; }
+  | lista_elementos           { $$ = $1; }
   ;
 
 lista_elementos:
     elemento                  { $$ = $1; /* será a raiz (1a função) */ }
-  | lista_elementos ',' elemento
+  | elemento ',' lista_elementos
                               {
-                                /* encadeia funções em lista: cada função aponta para a próxima como um filho adicional */
+                                /* encadeia funções: cada função tem como 1o filho seu 1o comando, e como 2o filho a próxima função */
                                 if ($1 == NULL) { $$ = $3; }
                                 else if ($3 == NULL) { $$ = $1; }
-                                else {
-                                  asd_tree_t *last = $1;
-                                  /* avança pela cadeia de próximas funções: por convenção, o filho de índice 1 é a próxima função, se existir */
-                                  while (last->number_of_children >= 2) {
-                                    last = last->children[last->number_of_children - 1];
-                                  }
-                                  asd_add_child(last, $3);
-                                  $$ = $1;
-                                }
+                                else { asd_add_child($1, $3); $$ = $1; }
                               }
   ;
 
@@ -125,8 +121,12 @@ lista_comandos_opt:
 
 lista_comandos:
     comando_simples           { $$ = $1; }
-  | lista_comandos comando_simples
-                              { if ($1 && $2) asd_add_child($1, $2); $$ = $1 ? $1 : $2; }
+  | comando_simples lista_comandos
+                              {
+                                /* constrói lista encadeada de comandos: cada comando aponta para o próximo como um filho adicional */
+                                if ($1 == NULL) { $$ = $2; }
+                                else { if ($2) asd_add_child($1, $2); $$ = $1; }
+                              }
   ;
 
 comando_simples:
@@ -202,8 +202,12 @@ argumentos_opt:
 
 lista_argumentos:
     expressao                 { $$ = $1; }
-  | lista_argumentos ',' expressao
-                              { if ($1 && $3) asd_add_child($1, $3); $$ = $1 ? $1 : $3; }
+  | expressao ',' lista_argumentos
+                              {
+                                /* lista encadeada de expressões (argumentos): cada expressão aponta para a próxima */
+                                if ($1 == NULL) { $$ = $3; }
+                                else { if ($3) asd_add_child($1, $3); $$ = $1; }
+                              }
   ;
 
 comando_retorno:

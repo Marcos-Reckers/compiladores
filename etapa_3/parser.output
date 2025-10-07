@@ -8,150 +8,152 @@ Grammar
 
     0 $accept: programa $end
 
-    1 programa: ε
-    2         | lista_elementos ';'
+    1 programa: lista_elementos_opt ';'
 
-    3 lista_elementos: elemento
-    4                | lista_elementos ',' elemento
+    2 lista_elementos_opt: ε
+    3                    | lista_elementos
 
-    5 elemento: definicao_funcao
-    6         | declaracao_variavel_global
+    4 lista_elementos: elemento
+    5                | elemento ',' lista_elementos
 
-    7 definicao_funcao: TK_ID TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos
+    6 elemento: definicao_funcao
+    7         | declaracao_variavel_global
 
-    8 tipo: TK_DECIMAL
-    9     | TK_INTEIRO
+    8 definicao_funcao: TK_ID TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos
 
-   10 parametros_opt: ε
-   11               | TK_COM lista_parametros
-   12               | lista_parametros
+    9 tipo: TK_DECIMAL
+   10     | TK_INTEIRO
 
-   13 lista_parametros: parametro
-   14                 | lista_parametros ',' parametro
+   11 parametros_opt: ε
+   12               | TK_COM lista_parametros
+   13               | lista_parametros
 
-   15 parametro: TK_ID TK_ATRIB tipo
+   14 lista_parametros: parametro
+   15                 | lista_parametros ',' parametro
 
-   16 bloco_comandos: '[' lista_comandos_opt ']'
+   16 parametro: TK_ID TK_ATRIB tipo
 
-   17 lista_comandos_opt: ε
-   18                   | lista_comandos
+   17 bloco_comandos: '[' lista_comandos_opt ']'
 
-   19 lista_comandos: comando_simples
-   20               | lista_comandos comando_simples
+   18 lista_comandos_opt: ε
+   19                   | lista_comandos
 
-   21 comando_simples: bloco_comandos
-   22                | declaracao_variavel_local
-   23                | comando_atribuicao
-   24                | chamada_funcao
-   25                | comando_retorno
-   26                | comando_condicional
-   27                | comando_enquanto
+   20 lista_comandos: comando_simples
+   21               | comando_simples lista_comandos
 
-   28 declaracao_variavel_global: TK_VAR TK_ID TK_ATRIB tipo
+   22 comando_simples: bloco_comandos
+   23                | declaracao_variavel_local
+   24                | comando_atribuicao
+   25                | chamada_funcao
+   26                | comando_retorno
+   27                | comando_condicional
+   28                | comando_enquanto
 
-   29 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt
+   29 declaracao_variavel_global: TK_VAR TK_ID TK_ATRIB tipo
 
-   30 inicializacao_opt: ε
-   31                  | TK_COM literal
+   30 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt
 
-   32 literal: TK_LI_INTEIRO
-   33        | TK_LI_DECIMAL
+   31 inicializacao_opt: ε
+   32                  | TK_COM literal
 
-   34 comando_atribuicao: TK_ID TK_ATRIB expressao
+   33 literal: TK_LI_INTEIRO
+   34        | TK_LI_DECIMAL
 
-   35 chamada_funcao: TK_ID '(' argumentos_opt ')'
+   35 comando_atribuicao: TK_ID TK_ATRIB expressao
 
-   36 argumentos_opt: ε
-   37               | lista_argumentos
+   36 chamada_funcao: TK_ID '(' argumentos_opt ')'
 
-   38 lista_argumentos: expressao
-   39                 | lista_argumentos ',' expressao
+   37 argumentos_opt: ε
+   38               | lista_argumentos
 
-   40 comando_retorno: TK_RETORNA expressao TK_ATRIB tipo
+   39 lista_argumentos: expressao
+   40                 | expressao ',' lista_argumentos
 
-   41 comando_condicional: TK_SE '(' expressao ')' bloco_comandos senao_opt
+   41 comando_retorno: TK_RETORNA expressao TK_ATRIB tipo
 
-   42 senao_opt: ε
-   43          | TK_SENAO bloco_comandos
+   42 comando_condicional: TK_SE '(' expressao ')' bloco_comandos senao_opt
 
-   44 comando_enquanto: TK_ENQUANTO '(' expressao ')' bloco_comandos
+   43 senao_opt: ε
+   44          | TK_SENAO bloco_comandos
 
-   45 expressao: expressao_or
+   45 comando_enquanto: TK_ENQUANTO '(' expressao ')' bloco_comandos
 
-   46 expressao_or: expressao_and
-   47             | expressao_or '|' expressao_and
+   46 expressao: expressao_or
 
-   48 expressao_and: expressao_eq
-   49              | expressao_and '&' expressao_eq
+   47 expressao_or: expressao_and
+   48             | expressao_or '|' expressao_and
 
-   50 expressao_eq: expressao_rel
-   51             | expressao_eq TK_OC_EQ expressao_rel
-   52             | expressao_eq TK_OC_NE expressao_rel
+   49 expressao_and: expressao_eq
+   50              | expressao_and '&' expressao_eq
 
-   53 expressao_rel: expressao_add
-   54              | expressao_rel '<' expressao_add
-   55              | expressao_rel '>' expressao_add
-   56              | expressao_rel TK_OC_LE expressao_add
-   57              | expressao_rel TK_OC_GE expressao_add
+   51 expressao_eq: expressao_rel
+   52             | expressao_eq TK_OC_EQ expressao_rel
+   53             | expressao_eq TK_OC_NE expressao_rel
 
-   58 expressao_add: expressao_mul
-   59              | expressao_add '+' expressao_mul
-   60              | expressao_add '-' expressao_mul
+   54 expressao_rel: expressao_add
+   55              | expressao_rel '<' expressao_add
+   56              | expressao_rel '>' expressao_add
+   57              | expressao_rel TK_OC_LE expressao_add
+   58              | expressao_rel TK_OC_GE expressao_add
 
-   61 expressao_mul: expressao_unaria
-   62              | expressao_mul '*' expressao_unaria
-   63              | expressao_mul '/' expressao_unaria
-   64              | expressao_mul '%' expressao_unaria
+   59 expressao_add: expressao_mul
+   60              | expressao_add '+' expressao_mul
+   61              | expressao_add '-' expressao_mul
 
-   65 expressao_unaria: expressao_primaria
-   66                 | '!' expressao_unaria
-   67                 | '+' expressao_unaria
-   68                 | '-' expressao_unaria
+   62 expressao_mul: expressao_unaria
+   63              | expressao_mul '*' expressao_unaria
+   64              | expressao_mul '/' expressao_unaria
+   65              | expressao_mul '%' expressao_unaria
 
-   69 expressao_primaria: chamada_funcao
-   70                   | literal
-   71                   | TK_ID
-   72                   | '(' expressao ')'
+   66 expressao_unaria: expressao_primaria
+   67                 | '!' expressao_unaria
+   68                 | '+' expressao_unaria
+   69                 | '-' expressao_unaria
+
+   70 expressao_primaria: chamada_funcao
+   71                   | literal
+   72                   | TK_ID
+   73                   | '(' expressao ')'
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '!' (33) 66
-    '%' (37) 64
-    '&' (38) 49
-    '(' (40) 35 41 44 72
-    ')' (41) 35 41 44 72
-    '*' (42) 62
-    '+' (43) 59 67
-    ',' (44) 4 14 39
-    '-' (45) 60 68
-    '/' (47) 63
-    ';' (59) 2
-    '<' (60) 54
-    '>' (62) 55
-    '[' (91) 16
-    ']' (93) 16
-    '|' (124) 47
+    '!' (33) 67
+    '%' (37) 65
+    '&' (38) 50
+    '(' (40) 36 42 45 73
+    ')' (41) 36 42 45 73
+    '*' (42) 63
+    '+' (43) 60 68
+    ',' (44) 5 15 40
+    '-' (45) 61 69
+    '/' (47) 64
+    ';' (59) 1
+    '<' (60) 55
+    '>' (62) 56
+    '[' (91) 17
+    ']' (93) 17
+    '|' (124) 48
     error (256)
     TK_TIPO (258)
-    TK_VAR (259) 28 29
-    TK_SENAO (260) 43
-    TK_DECIMAL (261) 8
-    TK_SE (262) 41
-    TK_INTEIRO (263) 9
-    TK_ATRIB (264) 7 15 28 29 34 40
-    TK_RETORNA (265) 40
-    TK_SETA (266) 7
-    TK_ENQUANTO (267) 44
-    TK_COM (268) 11 31
-    TK_OC_LE (269) 56
-    TK_OC_GE (270) 57
-    TK_OC_EQ (271) 51
-    TK_OC_NE (272) 52
-    TK_ID <valor_lexico> (273) 7 15 28 29 34 35 71
-    TK_LI_INTEIRO <valor_lexico> (274) 32
-    TK_LI_DECIMAL <valor_lexico> (275) 33
+    TK_VAR (259) 29 30
+    TK_SENAO (260) 44
+    TK_DECIMAL (261) 9
+    TK_SE (262) 42
+    TK_INTEIRO (263) 10
+    TK_ATRIB (264) 8 16 29 30 35 41
+    TK_RETORNA (265) 41
+    TK_SETA (266) 8
+    TK_ENQUANTO (267) 45
+    TK_COM (268) 12 32
+    TK_OC_LE (269) 57
+    TK_OC_GE (270) 58
+    TK_OC_EQ (271) 52
+    TK_OC_NE (272) 53
+    TK_ID <valor_lexico> (273) 8 16 29 30 35 36 72
+    TK_LI_INTEIRO <valor_lexico> (274) 33
+    TK_LI_DECIMAL <valor_lexico> (275) 34
     TK_ER (276)
 
 
@@ -160,2080 +162,1532 @@ Nonterminals, with rules where they appear
     $accept (38)
         on left: 0
     programa <node> (39)
-        on left: 1 2
+        on left: 1
         on right: 0
-    lista_elementos <node> (40)
-        on left: 3 4
-        on right: 2 4
-    elemento <node> (41)
-        on left: 5 6
-        on right: 3 4
-    definicao_funcao <node> (42)
-        on left: 7
-        on right: 5
-    tipo <node> (43)
-        on left: 8 9
-        on right: 7 15 28 29 40
-    parametros_opt <node> (44)
-        on left: 10 11 12
-        on right: 7
-    lista_parametros <node> (45)
-        on left: 13 14
-        on right: 11 12 14
-    parametro <node> (46)
-        on left: 15
-        on right: 13 14
-    bloco_comandos <node> (47)
-        on left: 16
-        on right: 7 21 41 43 44
-    lista_comandos_opt <node> (48)
-        on left: 17 18
-        on right: 16
-    lista_comandos <node> (49)
-        on left: 19 20
-        on right: 18 20
-    comando_simples <node> (50)
-        on left: 21 22 23 24 25 26 27
-        on right: 19 20
-    declaracao_variavel_global <node> (51)
-        on left: 28
+    lista_elementos_opt <node> (40)
+        on left: 2 3
+        on right: 1
+    lista_elementos <node> (41)
+        on left: 4 5
+        on right: 3 5
+    elemento <node> (42)
+        on left: 6 7
+        on right: 4 5
+    definicao_funcao <node> (43)
+        on left: 8
         on right: 6
-    declaracao_variavel_local <node> (52)
+    tipo <node> (44)
+        on left: 9 10
+        on right: 8 16 29 30 41
+    parametros_opt <node> (45)
+        on left: 11 12 13
+        on right: 8
+    lista_parametros <node> (46)
+        on left: 14 15
+        on right: 12 13 15
+    parametro <node> (47)
+        on left: 16
+        on right: 14 15
+    bloco_comandos <node> (48)
+        on left: 17
+        on right: 8 22 42 44 45
+    lista_comandos_opt <node> (49)
+        on left: 18 19
+        on right: 17
+    lista_comandos <node> (50)
+        on left: 20 21
+        on right: 19 21
+    comando_simples <node> (51)
+        on left: 22 23 24 25 26 27 28
+        on right: 20 21
+    declaracao_variavel_global <node> (52)
         on left: 29
-        on right: 22
-    inicializacao_opt <node> (53)
-        on left: 30 31
-        on right: 29
-    literal <node> (54)
-        on left: 32 33
-        on right: 31 70
-    comando_atribuicao <node> (55)
-        on left: 34
+        on right: 7
+    declaracao_variavel_local <node> (53)
+        on left: 30
         on right: 23
-    chamada_funcao <node> (56)
+    inicializacao_opt <node> (54)
+        on left: 31 32
+        on right: 30
+    literal <node> (55)
+        on left: 33 34
+        on right: 32 71
+    comando_atribuicao <node> (56)
         on left: 35
-        on right: 24 69
-    argumentos_opt <node> (57)
-        on left: 36 37
-        on right: 35
-    lista_argumentos <node> (58)
-        on left: 38 39
-        on right: 37 39
-    comando_retorno <node> (59)
-        on left: 40
-        on right: 25
-    comando_condicional <node> (60)
+        on right: 24
+    chamada_funcao <node> (57)
+        on left: 36
+        on right: 25 70
+    argumentos_opt <node> (58)
+        on left: 37 38
+        on right: 36
+    lista_argumentos <node> (59)
+        on left: 39 40
+        on right: 38 40
+    comando_retorno <node> (60)
         on left: 41
         on right: 26
-    senao_opt <node> (61)
-        on left: 42 43
-        on right: 41
-    comando_enquanto <node> (62)
-        on left: 44
+    comando_condicional <node> (61)
+        on left: 42
         on right: 27
-    expressao <node> (63)
+    senao_opt <node> (62)
+        on left: 43 44
+        on right: 42
+    comando_enquanto <node> (63)
         on left: 45
-        on right: 34 38 39 40 41 44 72
-    expressao_or <node> (64)
-        on left: 46 47
-        on right: 45 47
-    expressao_and <node> (65)
-        on left: 48 49
-        on right: 46 47 49
-    expressao_eq <node> (66)
-        on left: 50 51 52
-        on right: 48 49 51 52
-    expressao_rel <node> (67)
-        on left: 53 54 55 56 57
-        on right: 50 51 52 54 55 56 57
-    expressao_add <node> (68)
-        on left: 58 59 60
-        on right: 53 54 55 56 57 59 60
-    expressao_mul <node> (69)
-        on left: 61 62 63 64
-        on right: 58 59 60 62 63 64
-    expressao_unaria <node> (70)
-        on left: 65 66 67 68
-        on right: 61 62 63 64 66 67 68
-    expressao_primaria <node> (71)
-        on left: 69 70 71 72
-        on right: 65
+        on right: 28
+    expressao <node> (64)
+        on left: 46
+        on right: 35 39 40 41 42 45 73
+    expressao_or <node> (65)
+        on left: 47 48
+        on right: 46 48
+    expressao_and <node> (66)
+        on left: 49 50
+        on right: 47 48 50
+    expressao_eq <node> (67)
+        on left: 51 52 53
+        on right: 49 50 52 53
+    expressao_rel <node> (68)
+        on left: 54 55 56 57 58
+        on right: 51 52 53 55 56 57 58
+    expressao_add <node> (69)
+        on left: 59 60 61
+        on right: 54 55 56 57 58 60 61
+    expressao_mul <node> (70)
+        on left: 62 63 64 65
+        on right: 59 60 61 63 64 65
+    expressao_unaria <node> (71)
+        on left: 66 67 68 69
+        on right: 62 63 64 65 67 68 69
+    expressao_primaria <node> (72)
+        on left: 70 71 72 73
+        on right: 66
 
 
 State 0
 
     0 $accept: • programa $end
-    1 programa: ε •  [$end]
-    2         | • lista_elementos ';'
-    3 lista_elementos: • elemento
-    4                | • lista_elementos ',' elemento
-    5 elemento: • definicao_funcao
-    6         | • declaracao_variavel_global
-    7 definicao_funcao: • TK_ID TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos
-   28 declaracao_variavel_global: • TK_VAR TK_ID TK_ATRIB tipo
 
     TK_VAR  shift, and go to state 1
     TK_ID   shift, and go to state 2
 
-    $default  reduce using rule 1 (programa)
+    $default  reduce using rule 2 (lista_elementos_opt)
 
     programa                    go to state 3
-    lista_elementos             go to state 4
-    elemento                    go to state 5
-    definicao_funcao            go to state 6
-    declaracao_variavel_global  go to state 7
+    lista_elementos_opt         go to state 4
+    lista_elementos             go to state 5
+    elemento                    go to state 6
+    definicao_funcao            go to state 7
+    declaracao_variavel_global  go to state 8
 
 
 State 1
 
-   28 declaracao_variavel_global: TK_VAR • TK_ID TK_ATRIB tipo
+   29 declaracao_variavel_global: TK_VAR • TK_ID TK_ATRIB tipo
 
-    TK_ID  shift, and go to state 8
+    TK_ID  shift, and go to state 9
 
 
 State 2
 
-    7 definicao_funcao: TK_ID • TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos
+    8 definicao_funcao: TK_ID • TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos
 
-    TK_SETA  shift, and go to state 9
+    TK_SETA  shift, and go to state 10
 
 
 State 3
 
     0 $accept: programa • $end
 
-    $end  shift, and go to state 10
+    $end  shift, and go to state 11
 
 
 State 4
 
-    2 programa: lista_elementos • ';'
-    4 lista_elementos: lista_elementos • ',' elemento
+    1 programa: lista_elementos_opt • ';'
 
-    ';'  shift, and go to state 11
-    ','  shift, and go to state 12
+    ';'  shift, and go to state 12
 
 
 State 5
 
-    3 lista_elementos: elemento •
+    3 lista_elementos_opt: lista_elementos •
 
-    $default  reduce using rule 3 (lista_elementos)
+    $default  reduce using rule 3 (lista_elementos_opt)
 
 
 State 6
 
-    5 elemento: definicao_funcao •
+    4 lista_elementos: elemento •
+    5                | elemento • ',' lista_elementos
 
-    $default  reduce using rule 5 (elemento)
+    ','  shift, and go to state 13
+
+    $default  reduce using rule 4 (lista_elementos)
 
 
 State 7
 
-    6 elemento: declaracao_variavel_global •
+    6 elemento: definicao_funcao •
 
     $default  reduce using rule 6 (elemento)
 
 
 State 8
 
-   28 declaracao_variavel_global: TK_VAR TK_ID • TK_ATRIB tipo
+    7 elemento: declaracao_variavel_global •
 
-    TK_ATRIB  shift, and go to state 13
+    $default  reduce using rule 7 (elemento)
 
 
 State 9
 
-    7 definicao_funcao: TK_ID TK_SETA • tipo parametros_opt TK_ATRIB bloco_comandos
-    8 tipo: • TK_DECIMAL
-    9     | • TK_INTEIRO
+   29 declaracao_variavel_global: TK_VAR TK_ID • TK_ATRIB tipo
 
-    TK_DECIMAL  shift, and go to state 14
-    TK_INTEIRO  shift, and go to state 15
-
-    tipo  go to state 16
+    TK_ATRIB  shift, and go to state 14
 
 
 State 10
+
+    8 definicao_funcao: TK_ID TK_SETA • tipo parametros_opt TK_ATRIB bloco_comandos
+
+    TK_DECIMAL  shift, and go to state 15
+    TK_INTEIRO  shift, and go to state 16
+
+    tipo  go to state 17
+
+
+State 11
 
     0 $accept: programa $end •
 
     $default  accept
 
 
-State 11
-
-    2 programa: lista_elementos ';' •
-
-    $default  reduce using rule 2 (programa)
-
-
 State 12
 
-    4 lista_elementos: lista_elementos ',' • elemento
-    5 elemento: • definicao_funcao
-    6         | • declaracao_variavel_global
-    7 definicao_funcao: • TK_ID TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos
-   28 declaracao_variavel_global: • TK_VAR TK_ID TK_ATRIB tipo
+    1 programa: lista_elementos_opt ';' •
 
-    TK_VAR  shift, and go to state 1
-    TK_ID   shift, and go to state 2
-
-    elemento                    go to state 17
-    definicao_funcao            go to state 6
-    declaracao_variavel_global  go to state 7
+    $default  reduce using rule 1 (programa)
 
 
 State 13
 
-    8 tipo: • TK_DECIMAL
-    9     | • TK_INTEIRO
-   28 declaracao_variavel_global: TK_VAR TK_ID TK_ATRIB • tipo
+    5 lista_elementos: elemento ',' • lista_elementos
 
-    TK_DECIMAL  shift, and go to state 14
-    TK_INTEIRO  shift, and go to state 15
+    TK_VAR  shift, and go to state 1
+    TK_ID   shift, and go to state 2
 
-    tipo  go to state 18
+    lista_elementos             go to state 18
+    elemento                    go to state 6
+    definicao_funcao            go to state 7
+    declaracao_variavel_global  go to state 8
 
 
 State 14
 
-    8 tipo: TK_DECIMAL •
+   29 declaracao_variavel_global: TK_VAR TK_ID TK_ATRIB • tipo
 
-    $default  reduce using rule 8 (tipo)
+    TK_DECIMAL  shift, and go to state 15
+    TK_INTEIRO  shift, and go to state 16
+
+    tipo  go to state 19
 
 
 State 15
 
-    9 tipo: TK_INTEIRO •
+    9 tipo: TK_DECIMAL •
 
     $default  reduce using rule 9 (tipo)
 
 
 State 16
 
-    7 definicao_funcao: TK_ID TK_SETA tipo • parametros_opt TK_ATRIB bloco_comandos
-   10 parametros_opt: ε •  [TK_ATRIB]
-   11               | • TK_COM lista_parametros
-   12               | • lista_parametros
-   13 lista_parametros: • parametro
-   14                 | • lista_parametros ',' parametro
-   15 parametro: • TK_ID TK_ATRIB tipo
+   10 tipo: TK_INTEIRO •
 
-    TK_COM  shift, and go to state 19
-    TK_ID   shift, and go to state 20
-
-    $default  reduce using rule 10 (parametros_opt)
-
-    parametros_opt    go to state 21
-    lista_parametros  go to state 22
-    parametro         go to state 23
+    $default  reduce using rule 10 (tipo)
 
 
 State 17
 
-    4 lista_elementos: lista_elementos ',' elemento •
+    8 definicao_funcao: TK_ID TK_SETA tipo • parametros_opt TK_ATRIB bloco_comandos
 
-    $default  reduce using rule 4 (lista_elementos)
+    TK_COM  shift, and go to state 20
+    TK_ID   shift, and go to state 21
+
+    $default  reduce using rule 11 (parametros_opt)
+
+    parametros_opt    go to state 22
+    lista_parametros  go to state 23
+    parametro         go to state 24
 
 
 State 18
 
-   28 declaracao_variavel_global: TK_VAR TK_ID TK_ATRIB tipo •
+    5 lista_elementos: elemento ',' lista_elementos •
 
-    $default  reduce using rule 28 (declaracao_variavel_global)
+    $default  reduce using rule 5 (lista_elementos)
 
 
 State 19
 
-   11 parametros_opt: TK_COM • lista_parametros
-   13 lista_parametros: • parametro
-   14                 | • lista_parametros ',' parametro
-   15 parametro: • TK_ID TK_ATRIB tipo
+   29 declaracao_variavel_global: TK_VAR TK_ID TK_ATRIB tipo •
 
-    TK_ID  shift, and go to state 20
-
-    lista_parametros  go to state 24
-    parametro         go to state 23
+    $default  reduce using rule 29 (declaracao_variavel_global)
 
 
 State 20
 
-   15 parametro: TK_ID • TK_ATRIB tipo
+   12 parametros_opt: TK_COM • lista_parametros
 
-    TK_ATRIB  shift, and go to state 25
+    TK_ID  shift, and go to state 21
+
+    lista_parametros  go to state 25
+    parametro         go to state 24
 
 
 State 21
 
-    7 definicao_funcao: TK_ID TK_SETA tipo parametros_opt • TK_ATRIB bloco_comandos
+   16 parametro: TK_ID • TK_ATRIB tipo
 
     TK_ATRIB  shift, and go to state 26
 
 
 State 22
 
-   12 parametros_opt: lista_parametros •  [TK_ATRIB]
-   14 lista_parametros: lista_parametros • ',' parametro
+    8 definicao_funcao: TK_ID TK_SETA tipo parametros_opt • TK_ATRIB bloco_comandos
 
-    ','  shift, and go to state 27
-
-    $default  reduce using rule 12 (parametros_opt)
+    TK_ATRIB  shift, and go to state 27
 
 
 State 23
 
-   13 lista_parametros: parametro •
+   13 parametros_opt: lista_parametros •
+   15 lista_parametros: lista_parametros • ',' parametro
 
-    $default  reduce using rule 13 (lista_parametros)
+    ','  shift, and go to state 28
+
+    $default  reduce using rule 13 (parametros_opt)
 
 
 State 24
 
-   11 parametros_opt: TK_COM lista_parametros •  [TK_ATRIB]
-   14 lista_parametros: lista_parametros • ',' parametro
-
-    ','  shift, and go to state 27
-
-    $default  reduce using rule 11 (parametros_opt)
-
-
-State 25
-
-    8 tipo: • TK_DECIMAL
-    9     | • TK_INTEIRO
-   15 parametro: TK_ID TK_ATRIB • tipo
-
-    TK_DECIMAL  shift, and go to state 14
-    TK_INTEIRO  shift, and go to state 15
-
-    tipo  go to state 28
-
-
-State 26
-
-    7 definicao_funcao: TK_ID TK_SETA tipo parametros_opt TK_ATRIB • bloco_comandos
-   16 bloco_comandos: • '[' lista_comandos_opt ']'
-
-    '['  shift, and go to state 29
-
-    bloco_comandos  go to state 30
-
-
-State 27
-
-   14 lista_parametros: lista_parametros ',' • parametro
-   15 parametro: • TK_ID TK_ATRIB tipo
-
-    TK_ID  shift, and go to state 20
-
-    parametro  go to state 31
-
-
-State 28
-
-   15 parametro: TK_ID TK_ATRIB tipo •
-
-    $default  reduce using rule 15 (parametro)
-
-
-State 29
-
-   16 bloco_comandos: • '[' lista_comandos_opt ']'
-   16               | '[' • lista_comandos_opt ']'
-   17 lista_comandos_opt: ε •  [']']
-   18                   | • lista_comandos
-   19 lista_comandos: • comando_simples
-   20               | • lista_comandos comando_simples
-   21 comando_simples: • bloco_comandos
-   22                | • declaracao_variavel_local
-   23                | • comando_atribuicao
-   24                | • chamada_funcao
-   25                | • comando_retorno
-   26                | • comando_condicional
-   27                | • comando_enquanto
-   29 declaracao_variavel_local: • TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt
-   34 comando_atribuicao: • TK_ID TK_ATRIB expressao
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   40 comando_retorno: • TK_RETORNA expressao TK_ATRIB tipo
-   41 comando_condicional: • TK_SE '(' expressao ')' bloco_comandos senao_opt
-   44 comando_enquanto: • TK_ENQUANTO '(' expressao ')' bloco_comandos
-
-    TK_VAR       shift, and go to state 32
-    TK_SE        shift, and go to state 33
-    TK_RETORNA   shift, and go to state 34
-    TK_ENQUANTO  shift, and go to state 35
-    TK_ID        shift, and go to state 36
-    '['          shift, and go to state 29
-
-    $default  reduce using rule 17 (lista_comandos_opt)
-
-    bloco_comandos             go to state 37
-    lista_comandos_opt         go to state 38
-    lista_comandos             go to state 39
-    comando_simples            go to state 40
-    declaracao_variavel_local  go to state 41
-    comando_atribuicao         go to state 42
-    chamada_funcao             go to state 43
-    comando_retorno            go to state 44
-    comando_condicional        go to state 45
-    comando_enquanto           go to state 46
-
-
-State 30
-
-    7 definicao_funcao: TK_ID TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos •
-
-    $default  reduce using rule 7 (definicao_funcao)
-
-
-State 31
-
-   14 lista_parametros: lista_parametros ',' parametro •
+   14 lista_parametros: parametro •
 
     $default  reduce using rule 14 (lista_parametros)
 
 
+State 25
+
+   12 parametros_opt: TK_COM lista_parametros •
+   15 lista_parametros: lista_parametros • ',' parametro
+
+    ','  shift, and go to state 28
+
+    $default  reduce using rule 12 (parametros_opt)
+
+
+State 26
+
+   16 parametro: TK_ID TK_ATRIB • tipo
+
+    TK_DECIMAL  shift, and go to state 15
+    TK_INTEIRO  shift, and go to state 16
+
+    tipo  go to state 29
+
+
+State 27
+
+    8 definicao_funcao: TK_ID TK_SETA tipo parametros_opt TK_ATRIB • bloco_comandos
+
+    '['  shift, and go to state 30
+
+    bloco_comandos  go to state 31
+
+
+State 28
+
+   15 lista_parametros: lista_parametros ',' • parametro
+
+    TK_ID  shift, and go to state 21
+
+    parametro  go to state 32
+
+
+State 29
+
+   16 parametro: TK_ID TK_ATRIB tipo •
+
+    $default  reduce using rule 16 (parametro)
+
+
+State 30
+
+   17 bloco_comandos: '[' • lista_comandos_opt ']'
+
+    TK_VAR       shift, and go to state 33
+    TK_SE        shift, and go to state 34
+    TK_RETORNA   shift, and go to state 35
+    TK_ENQUANTO  shift, and go to state 36
+    TK_ID        shift, and go to state 37
+    '['          shift, and go to state 30
+
+    $default  reduce using rule 18 (lista_comandos_opt)
+
+    bloco_comandos             go to state 38
+    lista_comandos_opt         go to state 39
+    lista_comandos             go to state 40
+    comando_simples            go to state 41
+    declaracao_variavel_local  go to state 42
+    comando_atribuicao         go to state 43
+    chamada_funcao             go to state 44
+    comando_retorno            go to state 45
+    comando_condicional        go to state 46
+    comando_enquanto           go to state 47
+
+
+State 31
+
+    8 definicao_funcao: TK_ID TK_SETA tipo parametros_opt TK_ATRIB bloco_comandos •
+
+    $default  reduce using rule 8 (definicao_funcao)
+
+
 State 32
 
-   29 declaracao_variavel_local: TK_VAR • TK_ID TK_ATRIB tipo inicializacao_opt
+   15 lista_parametros: lista_parametros ',' parametro •
 
-    TK_ID  shift, and go to state 47
+    $default  reduce using rule 15 (lista_parametros)
 
 
 State 33
 
-   41 comando_condicional: TK_SE • '(' expressao ')' bloco_comandos senao_opt
+   30 declaracao_variavel_local: TK_VAR • TK_ID TK_ATRIB tipo inicializacao_opt
 
-    '('  shift, and go to state 48
+    TK_ID  shift, and go to state 48
 
 
 State 34
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   40 comando_retorno: TK_RETORNA • expressao TK_ATRIB tipo
-   45 expressao: • expressao_or
-   46 expressao_or: • expressao_and
-   47             | • expressao_or '|' expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   42 comando_condicional: TK_SE • '(' expressao ')' bloco_comandos senao_opt
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
-
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao           go to state 58
-    expressao_or        go to state 59
-    expressao_and       go to state 60
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    '('  shift, and go to state 49
 
 
 State 35
 
-   44 comando_enquanto: TK_ENQUANTO • '(' expressao ')' bloco_comandos
+   41 comando_retorno: TK_RETORNA • expressao TK_ATRIB tipo
 
-    '('  shift, and go to state 67
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
+
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao           go to state 59
+    expressao_or        go to state 60
+    expressao_and       go to state 61
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 36
 
-   34 comando_atribuicao: TK_ID • TK_ATRIB expressao
-   35 chamada_funcao: TK_ID • '(' argumentos_opt ')'
+   45 comando_enquanto: TK_ENQUANTO • '(' expressao ')' bloco_comandos
 
-    TK_ATRIB  shift, and go to state 68
-    '('       shift, and go to state 69
+    '('  shift, and go to state 68
 
 
 State 37
 
-   21 comando_simples: bloco_comandos •
+   35 comando_atribuicao: TK_ID • TK_ATRIB expressao
+   36 chamada_funcao: TK_ID • '(' argumentos_opt ')'
 
-    $default  reduce using rule 21 (comando_simples)
+    TK_ATRIB  shift, and go to state 69
+    '('       shift, and go to state 70
 
 
 State 38
 
-   16 bloco_comandos: '[' lista_comandos_opt • ']'
-
-    ']'  shift, and go to state 70
-
-
-State 39
-
-   16 bloco_comandos: • '[' lista_comandos_opt ']'
-   18 lista_comandos_opt: lista_comandos •  [']']
-   20 lista_comandos: lista_comandos • comando_simples
-   21 comando_simples: • bloco_comandos
-   22                | • declaracao_variavel_local
-   23                | • comando_atribuicao
-   24                | • chamada_funcao
-   25                | • comando_retorno
-   26                | • comando_condicional
-   27                | • comando_enquanto
-   29 declaracao_variavel_local: • TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt
-   34 comando_atribuicao: • TK_ID TK_ATRIB expressao
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   40 comando_retorno: • TK_RETORNA expressao TK_ATRIB tipo
-   41 comando_condicional: • TK_SE '(' expressao ')' bloco_comandos senao_opt
-   44 comando_enquanto: • TK_ENQUANTO '(' expressao ')' bloco_comandos
-
-    TK_VAR       shift, and go to state 32
-    TK_SE        shift, and go to state 33
-    TK_RETORNA   shift, and go to state 34
-    TK_ENQUANTO  shift, and go to state 35
-    TK_ID        shift, and go to state 36
-    '['          shift, and go to state 29
-
-    $default  reduce using rule 18 (lista_comandos_opt)
-
-    bloco_comandos             go to state 37
-    comando_simples            go to state 71
-    declaracao_variavel_local  go to state 41
-    comando_atribuicao         go to state 42
-    chamada_funcao             go to state 43
-    comando_retorno            go to state 44
-    comando_condicional        go to state 45
-    comando_enquanto           go to state 46
-
-
-State 40
-
-   19 lista_comandos: comando_simples •
-
-    $default  reduce using rule 19 (lista_comandos)
-
-
-State 41
-
-   22 comando_simples: declaracao_variavel_local •
+   22 comando_simples: bloco_comandos •
 
     $default  reduce using rule 22 (comando_simples)
 
 
+State 39
+
+   17 bloco_comandos: '[' lista_comandos_opt • ']'
+
+    ']'  shift, and go to state 71
+
+
+State 40
+
+   19 lista_comandos_opt: lista_comandos •
+
+    $default  reduce using rule 19 (lista_comandos_opt)
+
+
+State 41
+
+   20 lista_comandos: comando_simples •
+   21               | comando_simples • lista_comandos
+
+    TK_VAR       shift, and go to state 33
+    TK_SE        shift, and go to state 34
+    TK_RETORNA   shift, and go to state 35
+    TK_ENQUANTO  shift, and go to state 36
+    TK_ID        shift, and go to state 37
+    '['          shift, and go to state 30
+
+    $default  reduce using rule 20 (lista_comandos)
+
+    bloco_comandos             go to state 38
+    lista_comandos             go to state 72
+    comando_simples            go to state 41
+    declaracao_variavel_local  go to state 42
+    comando_atribuicao         go to state 43
+    chamada_funcao             go to state 44
+    comando_retorno            go to state 45
+    comando_condicional        go to state 46
+    comando_enquanto           go to state 47
+
+
 State 42
 
-   23 comando_simples: comando_atribuicao •
+   23 comando_simples: declaracao_variavel_local •
 
     $default  reduce using rule 23 (comando_simples)
 
 
 State 43
 
-   24 comando_simples: chamada_funcao •
+   24 comando_simples: comando_atribuicao •
 
     $default  reduce using rule 24 (comando_simples)
 
 
 State 44
 
-   25 comando_simples: comando_retorno •
+   25 comando_simples: chamada_funcao •
 
     $default  reduce using rule 25 (comando_simples)
 
 
 State 45
 
-   26 comando_simples: comando_condicional •
+   26 comando_simples: comando_retorno •
 
     $default  reduce using rule 26 (comando_simples)
 
 
 State 46
 
-   27 comando_simples: comando_enquanto •
+   27 comando_simples: comando_condicional •
 
     $default  reduce using rule 27 (comando_simples)
 
 
 State 47
 
-   29 declaracao_variavel_local: TK_VAR TK_ID • TK_ATRIB tipo inicializacao_opt
+   28 comando_simples: comando_enquanto •
 
-    TK_ATRIB  shift, and go to state 72
+    $default  reduce using rule 28 (comando_simples)
 
 
 State 48
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   41 comando_condicional: TK_SE '(' • expressao ')' bloco_comandos senao_opt
-   45 expressao: • expressao_or
-   46 expressao_or: • expressao_and
-   47             | • expressao_or '|' expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   30 declaracao_variavel_local: TK_VAR TK_ID • TK_ATRIB tipo inicializacao_opt
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
-
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao           go to state 73
-    expressao_or        go to state 59
-    expressao_and       go to state 60
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    TK_ATRIB  shift, and go to state 73
 
 
 State 49
 
-   35 chamada_funcao: TK_ID • '(' argumentos_opt ')'
-   71 expressao_primaria: TK_ID •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>', '+', '-', '*', '/', '%']
+   42 comando_condicional: TK_SE '(' • expressao ')' bloco_comandos senao_opt
 
-    '('  shift, and go to state 69
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    $default  reduce using rule 71 (expressao_primaria)
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao           go to state 74
+    expressao_or        go to state 60
+    expressao_and       go to state 61
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 50
 
-   32 literal: TK_LI_INTEIRO •
+   36 chamada_funcao: TK_ID • '(' argumentos_opt ')'
+   72 expressao_primaria: TK_ID •
 
-    $default  reduce using rule 32 (literal)
+    '('  shift, and go to state 70
+
+    $default  reduce using rule 72 (expressao_primaria)
 
 
 State 51
 
-   33 literal: TK_LI_DECIMAL •
+   33 literal: TK_LI_INTEIRO •
 
     $default  reduce using rule 33 (literal)
 
 
 State 52
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   45 expressao: • expressao_or
-   46 expressao_or: • expressao_and
-   47             | • expressao_or '|' expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
-   72                   | '(' • expressao ')'
+   34 literal: TK_LI_DECIMAL •
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
-
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao           go to state 74
-    expressao_or        go to state 59
-    expressao_and       go to state 60
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    $default  reduce using rule 34 (literal)
 
 
 State 53
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   67                 | '+' • expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   73 expressao_primaria: '(' • expressao ')'
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao_unaria    go to state 75
-    expressao_primaria  go to state 66
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao           go to state 75
+    expressao_or        go to state 60
+    expressao_and       go to state 61
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 54
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   68                 | '-' • expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   68 expressao_unaria: '+' • expressao_unaria
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_unaria    go to state 76
-    expressao_primaria  go to state 66
+    expressao_primaria  go to state 67
 
 
 State 55
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   66                 | '!' • expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   69 expressao_unaria: '-' • expressao_unaria
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_unaria    go to state 77
-    expressao_primaria  go to state 66
+    expressao_primaria  go to state 67
 
 
 State 56
 
-   70 expressao_primaria: literal •
+   67 expressao_unaria: '!' • expressao_unaria
 
-    $default  reduce using rule 70 (expressao_primaria)
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
+
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao_unaria    go to state 78
+    expressao_primaria  go to state 67
 
 
 State 57
 
-   69 expressao_primaria: chamada_funcao •
+   71 expressao_primaria: literal •
 
-    $default  reduce using rule 69 (expressao_primaria)
+    $default  reduce using rule 71 (expressao_primaria)
 
 
 State 58
 
-   40 comando_retorno: TK_RETORNA expressao • TK_ATRIB tipo
+   70 expressao_primaria: chamada_funcao •
 
-    TK_ATRIB  shift, and go to state 78
+    $default  reduce using rule 70 (expressao_primaria)
 
 
 State 59
 
-   45 expressao: expressao_or •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_ID, ',', '[', ']', ')']
-   47 expressao_or: expressao_or • '|' expressao_and
+   41 comando_retorno: TK_RETORNA expressao • TK_ATRIB tipo
 
-    '|'  shift, and go to state 79
-
-    $default  reduce using rule 45 (expressao)
+    TK_ATRIB  shift, and go to state 79
 
 
 State 60
 
-   46 expressao_or: expressao_and •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_ID, ',', '[', ']', ')', '|']
-   49 expressao_and: expressao_and • '&' expressao_eq
+   46 expressao: expressao_or •
+   48 expressao_or: expressao_or • '|' expressao_and
 
-    '&'  shift, and go to state 80
+    '|'  shift, and go to state 80
 
-    $default  reduce using rule 46 (expressao_or)
+    $default  reduce using rule 46 (expressao)
 
 
 State 61
 
-   48 expressao_and: expressao_eq •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_ID, ',', '[', ']', ')', '|', '&']
-   51 expressao_eq: expressao_eq • TK_OC_EQ expressao_rel
-   52             | expressao_eq • TK_OC_NE expressao_rel
+   47 expressao_or: expressao_and •
+   50 expressao_and: expressao_and • '&' expressao_eq
 
-    TK_OC_EQ  shift, and go to state 81
-    TK_OC_NE  shift, and go to state 82
+    '&'  shift, and go to state 81
 
-    $default  reduce using rule 48 (expressao_and)
+    $default  reduce using rule 47 (expressao_or)
 
 
 State 62
 
-   50 expressao_eq: expressao_rel •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&']
-   54 expressao_rel: expressao_rel • '<' expressao_add
-   55              | expressao_rel • '>' expressao_add
-   56              | expressao_rel • TK_OC_LE expressao_add
-   57              | expressao_rel • TK_OC_GE expressao_add
+   49 expressao_and: expressao_eq •
+   52 expressao_eq: expressao_eq • TK_OC_EQ expressao_rel
+   53             | expressao_eq • TK_OC_NE expressao_rel
 
-    TK_OC_LE  shift, and go to state 83
-    TK_OC_GE  shift, and go to state 84
-    '<'       shift, and go to state 85
-    '>'       shift, and go to state 86
+    TK_OC_EQ  shift, and go to state 82
+    TK_OC_NE  shift, and go to state 83
 
-    $default  reduce using rule 50 (expressao_eq)
+    $default  reduce using rule 49 (expressao_and)
 
 
 State 63
 
-   53 expressao_rel: expressao_add •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>']
-   59 expressao_add: expressao_add • '+' expressao_mul
-   60              | expressao_add • '-' expressao_mul
+   51 expressao_eq: expressao_rel •
+   55 expressao_rel: expressao_rel • '<' expressao_add
+   56              | expressao_rel • '>' expressao_add
+   57              | expressao_rel • TK_OC_LE expressao_add
+   58              | expressao_rel • TK_OC_GE expressao_add
 
-    '+'  shift, and go to state 87
-    '-'  shift, and go to state 88
+    TK_OC_LE  shift, and go to state 84
+    TK_OC_GE  shift, and go to state 85
+    '<'       shift, and go to state 86
+    '>'       shift, and go to state 87
 
-    $default  reduce using rule 53 (expressao_rel)
+    $default  reduce using rule 51 (expressao_eq)
 
 
 State 64
 
-   58 expressao_add: expressao_mul •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>', '+', '-']
-   62 expressao_mul: expressao_mul • '*' expressao_unaria
-   63              | expressao_mul • '/' expressao_unaria
-   64              | expressao_mul • '%' expressao_unaria
+   54 expressao_rel: expressao_add •
+   60 expressao_add: expressao_add • '+' expressao_mul
+   61              | expressao_add • '-' expressao_mul
 
-    '*'  shift, and go to state 89
-    '/'  shift, and go to state 90
-    '%'  shift, and go to state 91
+    '+'  shift, and go to state 88
+    '-'  shift, and go to state 89
 
-    $default  reduce using rule 58 (expressao_add)
+    $default  reduce using rule 54 (expressao_rel)
 
 
 State 65
 
-   61 expressao_mul: expressao_unaria •
+   59 expressao_add: expressao_mul •
+   63 expressao_mul: expressao_mul • '*' expressao_unaria
+   64              | expressao_mul • '/' expressao_unaria
+   65              | expressao_mul • '%' expressao_unaria
 
-    $default  reduce using rule 61 (expressao_mul)
+    '*'  shift, and go to state 90
+    '/'  shift, and go to state 91
+    '%'  shift, and go to state 92
+
+    $default  reduce using rule 59 (expressao_add)
 
 
 State 66
 
-   65 expressao_unaria: expressao_primaria •
+   62 expressao_mul: expressao_unaria •
 
-    $default  reduce using rule 65 (expressao_unaria)
+    $default  reduce using rule 62 (expressao_mul)
 
 
 State 67
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   44 comando_enquanto: TK_ENQUANTO '(' • expressao ')' bloco_comandos
-   45 expressao: • expressao_or
-   46 expressao_or: • expressao_and
-   47             | • expressao_or '|' expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   66 expressao_unaria: expressao_primaria •
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
-
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao           go to state 92
-    expressao_or        go to state 59
-    expressao_and       go to state 60
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    $default  reduce using rule 66 (expressao_unaria)
 
 
 State 68
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   34 comando_atribuicao: TK_ID TK_ATRIB • expressao
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   45 expressao: • expressao_or
-   46 expressao_or: • expressao_and
-   47             | • expressao_or '|' expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   45 comando_enquanto: TK_ENQUANTO '(' • expressao ')' bloco_comandos
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao           go to state 93
-    expressao_or        go to state 59
-    expressao_and       go to state 60
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    expressao_or        go to state 60
+    expressao_and       go to state 61
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 69
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   35               | TK_ID '(' • argumentos_opt ')'
-   36 argumentos_opt: ε •  [')']
-   37               | • lista_argumentos
-   38 lista_argumentos: • expressao
-   39                 | • lista_argumentos ',' expressao
-   45 expressao: • expressao_or
-   46 expressao_or: • expressao_and
-   47             | • expressao_or '|' expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   35 comando_atribuicao: TK_ID TK_ATRIB • expressao
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    $default  reduce using rule 36 (argumentos_opt)
-
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    argumentos_opt      go to state 94
-    lista_argumentos    go to state 95
-    expressao           go to state 96
-    expressao_or        go to state 59
-    expressao_and       go to state 60
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao           go to state 94
+    expressao_or        go to state 60
+    expressao_and       go to state 61
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 70
 
-   16 bloco_comandos: '[' lista_comandos_opt ']' •
+   36 chamada_funcao: TK_ID '(' • argumentos_opt ')'
 
-    $default  reduce using rule 16 (bloco_comandos)
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
+
+    $default  reduce using rule 37 (argumentos_opt)
+
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    argumentos_opt      go to state 95
+    lista_argumentos    go to state 96
+    expressao           go to state 97
+    expressao_or        go to state 60
+    expressao_and       go to state 61
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 71
 
-   20 lista_comandos: lista_comandos comando_simples •
+   17 bloco_comandos: '[' lista_comandos_opt ']' •
 
-    $default  reduce using rule 20 (lista_comandos)
+    $default  reduce using rule 17 (bloco_comandos)
 
 
 State 72
 
-    8 tipo: • TK_DECIMAL
-    9     | • TK_INTEIRO
-   29 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB • tipo inicializacao_opt
+   21 lista_comandos: comando_simples lista_comandos •
 
-    TK_DECIMAL  shift, and go to state 14
-    TK_INTEIRO  shift, and go to state 15
-
-    tipo  go to state 97
+    $default  reduce using rule 21 (lista_comandos)
 
 
 State 73
 
-   41 comando_condicional: TK_SE '(' expressao • ')' bloco_comandos senao_opt
+   30 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB • tipo inicializacao_opt
 
-    ')'  shift, and go to state 98
+    TK_DECIMAL  shift, and go to state 15
+    TK_INTEIRO  shift, and go to state 16
+
+    tipo  go to state 98
 
 
 State 74
 
-   72 expressao_primaria: '(' expressao • ')'
+   42 comando_condicional: TK_SE '(' expressao • ')' bloco_comandos senao_opt
 
     ')'  shift, and go to state 99
 
 
 State 75
 
-   67 expressao_unaria: '+' expressao_unaria •
+   73 expressao_primaria: '(' expressao • ')'
 
-    $default  reduce using rule 67 (expressao_unaria)
+    ')'  shift, and go to state 100
 
 
 State 76
 
-   68 expressao_unaria: '-' expressao_unaria •
+   68 expressao_unaria: '+' expressao_unaria •
 
     $default  reduce using rule 68 (expressao_unaria)
 
 
 State 77
 
-   66 expressao_unaria: '!' expressao_unaria •
+   69 expressao_unaria: '-' expressao_unaria •
 
-    $default  reduce using rule 66 (expressao_unaria)
+    $default  reduce using rule 69 (expressao_unaria)
 
 
 State 78
 
-    8 tipo: • TK_DECIMAL
-    9     | • TK_INTEIRO
-   40 comando_retorno: TK_RETORNA expressao TK_ATRIB • tipo
+   67 expressao_unaria: '!' expressao_unaria •
 
-    TK_DECIMAL  shift, and go to state 14
-    TK_INTEIRO  shift, and go to state 15
-
-    tipo  go to state 100
+    $default  reduce using rule 67 (expressao_unaria)
 
 
 State 79
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   47 expressao_or: expressao_or '|' • expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   41 comando_retorno: TK_RETORNA expressao TK_ATRIB • tipo
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_DECIMAL  shift, and go to state 15
+    TK_INTEIRO  shift, and go to state 16
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao_and       go to state 101
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    tipo  go to state 101
 
 
 State 80
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   49 expressao_and: expressao_and '&' • expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   48 expressao_or: expressao_or '|' • expressao_and
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao_eq        go to state 102
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao_and       go to state 102
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 81
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   51 expressao_eq: expressao_eq TK_OC_EQ • expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   50 expressao_and: expressao_and '&' • expressao_eq
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao_rel       go to state 103
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao_eq        go to state 103
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 82
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   52 expressao_eq: expressao_eq TK_OC_NE • expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   52 expressao_eq: expressao_eq TK_OC_EQ • expressao_rel
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_rel       go to state 104
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 83
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   56 expressao_rel: expressao_rel TK_OC_LE • expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   53 expressao_eq: expressao_eq TK_OC_NE • expressao_rel
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao_add       go to state 105
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao_rel       go to state 105
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 84
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   57 expressao_rel: expressao_rel TK_OC_GE • expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   57 expressao_rel: expressao_rel TK_OC_LE • expressao_add
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_add       go to state 106
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 85
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   54 expressao_rel: expressao_rel '<' • expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   58 expressao_rel: expressao_rel TK_OC_GE • expressao_add
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_add       go to state 107
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 86
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   55 expressao_rel: expressao_rel '>' • expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   55 expressao_rel: expressao_rel '<' • expressao_add
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_add       go to state 108
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 87
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   59 expressao_add: expressao_add '+' • expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   56 expressao_rel: expressao_rel '>' • expressao_add
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao_mul       go to state 109
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao_add       go to state 109
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 88
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   60 expressao_add: expressao_add '-' • expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   60 expressao_add: expressao_add '+' • expressao_mul
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_mul       go to state 110
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 89
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   62 expressao_mul: expressao_mul '*' • expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   61 expressao_add: expressao_add '-' • expressao_mul
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao_unaria    go to state 111
-    expressao_primaria  go to state 66
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao_mul       go to state 111
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 90
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   63 expressao_mul: expressao_mul '/' • expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   63 expressao_mul: expressao_mul '*' • expressao_unaria
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_unaria    go to state 112
-    expressao_primaria  go to state 66
+    expressao_primaria  go to state 67
 
 
 State 91
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   64 expressao_mul: expressao_mul '%' • expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   64 expressao_mul: expressao_mul '/' • expressao_unaria
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal             go to state 56
-    chamada_funcao      go to state 57
+    literal             go to state 57
+    chamada_funcao      go to state 58
     expressao_unaria    go to state 113
-    expressao_primaria  go to state 66
+    expressao_primaria  go to state 67
 
 
 State 92
 
-   44 comando_enquanto: TK_ENQUANTO '(' expressao • ')' bloco_comandos
+   65 expressao_mul: expressao_mul '%' • expressao_unaria
 
-    ')'  shift, and go to state 114
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
+
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    expressao_unaria    go to state 114
+    expressao_primaria  go to state 67
 
 
 State 93
 
-   34 comando_atribuicao: TK_ID TK_ATRIB expressao •
-
-    $default  reduce using rule 34 (comando_atribuicao)
-
-
-State 94
-
-   35 chamada_funcao: TK_ID '(' argumentos_opt • ')'
+   45 comando_enquanto: TK_ENQUANTO '(' expressao • ')' bloco_comandos
 
     ')'  shift, and go to state 115
 
 
+State 94
+
+   35 comando_atribuicao: TK_ID TK_ATRIB expressao •
+
+    $default  reduce using rule 35 (comando_atribuicao)
+
+
 State 95
 
-   37 argumentos_opt: lista_argumentos •  [')']
-   39 lista_argumentos: lista_argumentos • ',' expressao
+   36 chamada_funcao: TK_ID '(' argumentos_opt • ')'
 
-    ','  shift, and go to state 116
-
-    $default  reduce using rule 37 (argumentos_opt)
+    ')'  shift, and go to state 116
 
 
 State 96
 
-   38 lista_argumentos: expressao •
+   38 argumentos_opt: lista_argumentos •
 
-    $default  reduce using rule 38 (lista_argumentos)
+    $default  reduce using rule 38 (argumentos_opt)
 
 
 State 97
 
-   29 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB tipo • inicializacao_opt
-   30 inicializacao_opt: ε •  [TK_VAR, TK_SE, TK_RETORNA, TK_ENQUANTO, TK_ID, '[', ']']
-   31                  | • TK_COM literal
+   39 lista_argumentos: expressao •
+   40                 | expressao • ',' lista_argumentos
 
-    TK_COM  shift, and go to state 117
+    ','  shift, and go to state 117
 
-    $default  reduce using rule 30 (inicializacao_opt)
-
-    inicializacao_opt  go to state 118
+    $default  reduce using rule 39 (lista_argumentos)
 
 
 State 98
 
-   16 bloco_comandos: • '[' lista_comandos_opt ']'
-   41 comando_condicional: TK_SE '(' expressao ')' • bloco_comandos senao_opt
+   30 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB tipo • inicializacao_opt
 
-    '['  shift, and go to state 29
+    TK_COM  shift, and go to state 118
 
-    bloco_comandos  go to state 119
+    $default  reduce using rule 31 (inicializacao_opt)
+
+    inicializacao_opt  go to state 119
 
 
 State 99
 
-   72 expressao_primaria: '(' expressao ')' •
+   42 comando_condicional: TK_SE '(' expressao ')' • bloco_comandos senao_opt
 
-    $default  reduce using rule 72 (expressao_primaria)
+    '['  shift, and go to state 30
+
+    bloco_comandos  go to state 120
 
 
 State 100
 
-   40 comando_retorno: TK_RETORNA expressao TK_ATRIB tipo •
+   73 expressao_primaria: '(' expressao ')' •
 
-    $default  reduce using rule 40 (comando_retorno)
+    $default  reduce using rule 73 (expressao_primaria)
 
 
 State 101
 
-   47 expressao_or: expressao_or '|' expressao_and •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_ID, ',', '[', ']', ')', '|']
-   49 expressao_and: expressao_and • '&' expressao_eq
+   41 comando_retorno: TK_RETORNA expressao TK_ATRIB tipo •
 
-    '&'  shift, and go to state 80
-
-    $default  reduce using rule 47 (expressao_or)
+    $default  reduce using rule 41 (comando_retorno)
 
 
 State 102
 
-   49 expressao_and: expressao_and '&' expressao_eq •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_ID, ',', '[', ']', ')', '|', '&']
-   51 expressao_eq: expressao_eq • TK_OC_EQ expressao_rel
-   52             | expressao_eq • TK_OC_NE expressao_rel
+   48 expressao_or: expressao_or '|' expressao_and •
+   50 expressao_and: expressao_and • '&' expressao_eq
 
-    TK_OC_EQ  shift, and go to state 81
-    TK_OC_NE  shift, and go to state 82
+    '&'  shift, and go to state 81
 
-    $default  reduce using rule 49 (expressao_and)
+    $default  reduce using rule 48 (expressao_or)
 
 
 State 103
 
-   51 expressao_eq: expressao_eq TK_OC_EQ expressao_rel •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&']
-   54 expressao_rel: expressao_rel • '<' expressao_add
-   55              | expressao_rel • '>' expressao_add
-   56              | expressao_rel • TK_OC_LE expressao_add
-   57              | expressao_rel • TK_OC_GE expressao_add
+   50 expressao_and: expressao_and '&' expressao_eq •
+   52 expressao_eq: expressao_eq • TK_OC_EQ expressao_rel
+   53             | expressao_eq • TK_OC_NE expressao_rel
 
-    TK_OC_LE  shift, and go to state 83
-    TK_OC_GE  shift, and go to state 84
-    '<'       shift, and go to state 85
-    '>'       shift, and go to state 86
+    TK_OC_EQ  shift, and go to state 82
+    TK_OC_NE  shift, and go to state 83
 
-    $default  reduce using rule 51 (expressao_eq)
+    $default  reduce using rule 50 (expressao_and)
 
 
 State 104
 
-   52 expressao_eq: expressao_eq TK_OC_NE expressao_rel •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&']
-   54 expressao_rel: expressao_rel • '<' expressao_add
-   55              | expressao_rel • '>' expressao_add
-   56              | expressao_rel • TK_OC_LE expressao_add
-   57              | expressao_rel • TK_OC_GE expressao_add
+   52 expressao_eq: expressao_eq TK_OC_EQ expressao_rel •
+   55 expressao_rel: expressao_rel • '<' expressao_add
+   56              | expressao_rel • '>' expressao_add
+   57              | expressao_rel • TK_OC_LE expressao_add
+   58              | expressao_rel • TK_OC_GE expressao_add
 
-    TK_OC_LE  shift, and go to state 83
-    TK_OC_GE  shift, and go to state 84
-    '<'       shift, and go to state 85
-    '>'       shift, and go to state 86
+    TK_OC_LE  shift, and go to state 84
+    TK_OC_GE  shift, and go to state 85
+    '<'       shift, and go to state 86
+    '>'       shift, and go to state 87
 
     $default  reduce using rule 52 (expressao_eq)
 
 
 State 105
 
-   56 expressao_rel: expressao_rel TK_OC_LE expressao_add •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>']
-   59 expressao_add: expressao_add • '+' expressao_mul
-   60              | expressao_add • '-' expressao_mul
+   53 expressao_eq: expressao_eq TK_OC_NE expressao_rel •
+   55 expressao_rel: expressao_rel • '<' expressao_add
+   56              | expressao_rel • '>' expressao_add
+   57              | expressao_rel • TK_OC_LE expressao_add
+   58              | expressao_rel • TK_OC_GE expressao_add
 
-    '+'  shift, and go to state 87
-    '-'  shift, and go to state 88
+    TK_OC_LE  shift, and go to state 84
+    TK_OC_GE  shift, and go to state 85
+    '<'       shift, and go to state 86
+    '>'       shift, and go to state 87
 
-    $default  reduce using rule 56 (expressao_rel)
+    $default  reduce using rule 53 (expressao_eq)
 
 
 State 106
 
-   57 expressao_rel: expressao_rel TK_OC_GE expressao_add •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>']
-   59 expressao_add: expressao_add • '+' expressao_mul
-   60              | expressao_add • '-' expressao_mul
+   57 expressao_rel: expressao_rel TK_OC_LE expressao_add •
+   60 expressao_add: expressao_add • '+' expressao_mul
+   61              | expressao_add • '-' expressao_mul
 
-    '+'  shift, and go to state 87
-    '-'  shift, and go to state 88
+    '+'  shift, and go to state 88
+    '-'  shift, and go to state 89
 
     $default  reduce using rule 57 (expressao_rel)
 
 
 State 107
 
-   54 expressao_rel: expressao_rel '<' expressao_add •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>']
-   59 expressao_add: expressao_add • '+' expressao_mul
-   60              | expressao_add • '-' expressao_mul
+   58 expressao_rel: expressao_rel TK_OC_GE expressao_add •
+   60 expressao_add: expressao_add • '+' expressao_mul
+   61              | expressao_add • '-' expressao_mul
 
-    '+'  shift, and go to state 87
-    '-'  shift, and go to state 88
+    '+'  shift, and go to state 88
+    '-'  shift, and go to state 89
 
-    $default  reduce using rule 54 (expressao_rel)
+    $default  reduce using rule 58 (expressao_rel)
 
 
 State 108
 
-   55 expressao_rel: expressao_rel '>' expressao_add •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>']
-   59 expressao_add: expressao_add • '+' expressao_mul
-   60              | expressao_add • '-' expressao_mul
+   55 expressao_rel: expressao_rel '<' expressao_add •
+   60 expressao_add: expressao_add • '+' expressao_mul
+   61              | expressao_add • '-' expressao_mul
 
-    '+'  shift, and go to state 87
-    '-'  shift, and go to state 88
+    '+'  shift, and go to state 88
+    '-'  shift, and go to state 89
 
     $default  reduce using rule 55 (expressao_rel)
 
 
 State 109
 
-   59 expressao_add: expressao_add '+' expressao_mul •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>', '+', '-']
-   62 expressao_mul: expressao_mul • '*' expressao_unaria
-   63              | expressao_mul • '/' expressao_unaria
-   64              | expressao_mul • '%' expressao_unaria
+   56 expressao_rel: expressao_rel '>' expressao_add •
+   60 expressao_add: expressao_add • '+' expressao_mul
+   61              | expressao_add • '-' expressao_mul
 
-    '*'  shift, and go to state 89
-    '/'  shift, and go to state 90
-    '%'  shift, and go to state 91
+    '+'  shift, and go to state 88
+    '-'  shift, and go to state 89
 
-    $default  reduce using rule 59 (expressao_add)
+    $default  reduce using rule 56 (expressao_rel)
 
 
 State 110
 
-   60 expressao_add: expressao_add '-' expressao_mul •  [TK_VAR, TK_SE, TK_ATRIB, TK_RETORNA, TK_ENQUANTO, TK_OC_LE, TK_OC_GE, TK_OC_EQ, TK_OC_NE, TK_ID, ',', '[', ']', ')', '|', '&', '<', '>', '+', '-']
-   62 expressao_mul: expressao_mul • '*' expressao_unaria
-   63              | expressao_mul • '/' expressao_unaria
-   64              | expressao_mul • '%' expressao_unaria
+   60 expressao_add: expressao_add '+' expressao_mul •
+   63 expressao_mul: expressao_mul • '*' expressao_unaria
+   64              | expressao_mul • '/' expressao_unaria
+   65              | expressao_mul • '%' expressao_unaria
 
-    '*'  shift, and go to state 89
-    '/'  shift, and go to state 90
-    '%'  shift, and go to state 91
+    '*'  shift, and go to state 90
+    '/'  shift, and go to state 91
+    '%'  shift, and go to state 92
 
     $default  reduce using rule 60 (expressao_add)
 
 
 State 111
 
-   62 expressao_mul: expressao_mul '*' expressao_unaria •
+   61 expressao_add: expressao_add '-' expressao_mul •
+   63 expressao_mul: expressao_mul • '*' expressao_unaria
+   64              | expressao_mul • '/' expressao_unaria
+   65              | expressao_mul • '%' expressao_unaria
 
-    $default  reduce using rule 62 (expressao_mul)
+    '*'  shift, and go to state 90
+    '/'  shift, and go to state 91
+    '%'  shift, and go to state 92
+
+    $default  reduce using rule 61 (expressao_add)
 
 
 State 112
 
-   63 expressao_mul: expressao_mul '/' expressao_unaria •
+   63 expressao_mul: expressao_mul '*' expressao_unaria •
 
     $default  reduce using rule 63 (expressao_mul)
 
 
 State 113
 
-   64 expressao_mul: expressao_mul '%' expressao_unaria •
+   64 expressao_mul: expressao_mul '/' expressao_unaria •
 
     $default  reduce using rule 64 (expressao_mul)
 
 
 State 114
 
-   16 bloco_comandos: • '[' lista_comandos_opt ']'
-   44 comando_enquanto: TK_ENQUANTO '(' expressao ')' • bloco_comandos
+   65 expressao_mul: expressao_mul '%' expressao_unaria •
 
-    '['  shift, and go to state 29
-
-    bloco_comandos  go to state 120
+    $default  reduce using rule 65 (expressao_mul)
 
 
 State 115
 
-   35 chamada_funcao: TK_ID '(' argumentos_opt ')' •
+   45 comando_enquanto: TK_ENQUANTO '(' expressao ')' • bloco_comandos
 
-    $default  reduce using rule 35 (chamada_funcao)
+    '['  shift, and go to state 30
+
+    bloco_comandos  go to state 121
 
 
 State 116
 
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
-   35 chamada_funcao: • TK_ID '(' argumentos_opt ')'
-   39 lista_argumentos: lista_argumentos ',' • expressao
-   45 expressao: • expressao_or
-   46 expressao_or: • expressao_and
-   47             | • expressao_or '|' expressao_and
-   48 expressao_and: • expressao_eq
-   49              | • expressao_and '&' expressao_eq
-   50 expressao_eq: • expressao_rel
-   51             | • expressao_eq TK_OC_EQ expressao_rel
-   52             | • expressao_eq TK_OC_NE expressao_rel
-   53 expressao_rel: • expressao_add
-   54              | • expressao_rel '<' expressao_add
-   55              | • expressao_rel '>' expressao_add
-   56              | • expressao_rel TK_OC_LE expressao_add
-   57              | • expressao_rel TK_OC_GE expressao_add
-   58 expressao_add: • expressao_mul
-   59              | • expressao_add '+' expressao_mul
-   60              | • expressao_add '-' expressao_mul
-   61 expressao_mul: • expressao_unaria
-   62              | • expressao_mul '*' expressao_unaria
-   63              | • expressao_mul '/' expressao_unaria
-   64              | • expressao_mul '%' expressao_unaria
-   65 expressao_unaria: • expressao_primaria
-   66                 | • '!' expressao_unaria
-   67                 | • '+' expressao_unaria
-   68                 | • '-' expressao_unaria
-   69 expressao_primaria: • chamada_funcao
-   70                   | • literal
-   71                   | • TK_ID
-   72                   | • '(' expressao ')'
+   36 chamada_funcao: TK_ID '(' argumentos_opt ')' •
 
-    TK_ID          shift, and go to state 49
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
-    '('            shift, and go to state 52
-    '+'            shift, and go to state 53
-    '-'            shift, and go to state 54
-    '!'            shift, and go to state 55
-
-    literal             go to state 56
-    chamada_funcao      go to state 57
-    expressao           go to state 121
-    expressao_or        go to state 59
-    expressao_and       go to state 60
-    expressao_eq        go to state 61
-    expressao_rel       go to state 62
-    expressao_add       go to state 63
-    expressao_mul       go to state 64
-    expressao_unaria    go to state 65
-    expressao_primaria  go to state 66
+    $default  reduce using rule 36 (chamada_funcao)
 
 
 State 117
 
-   31 inicializacao_opt: TK_COM • literal
-   32 literal: • TK_LI_INTEIRO
-   33        | • TK_LI_DECIMAL
+   40 lista_argumentos: expressao ',' • lista_argumentos
 
-    TK_LI_INTEIRO  shift, and go to state 50
-    TK_LI_DECIMAL  shift, and go to state 51
+    TK_ID          shift, and go to state 50
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+    '('            shift, and go to state 53
+    '+'            shift, and go to state 54
+    '-'            shift, and go to state 55
+    '!'            shift, and go to state 56
 
-    literal  go to state 122
+    literal             go to state 57
+    chamada_funcao      go to state 58
+    lista_argumentos    go to state 122
+    expressao           go to state 97
+    expressao_or        go to state 60
+    expressao_and       go to state 61
+    expressao_eq        go to state 62
+    expressao_rel       go to state 63
+    expressao_add       go to state 64
+    expressao_mul       go to state 65
+    expressao_unaria    go to state 66
+    expressao_primaria  go to state 67
 
 
 State 118
 
-   29 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt •
+   32 inicializacao_opt: TK_COM • literal
 
-    $default  reduce using rule 29 (declaracao_variavel_local)
+    TK_LI_INTEIRO  shift, and go to state 51
+    TK_LI_DECIMAL  shift, and go to state 52
+
+    literal  go to state 123
 
 
 State 119
 
-   41 comando_condicional: TK_SE '(' expressao ')' bloco_comandos • senao_opt
-   42 senao_opt: ε •  [TK_VAR, TK_SE, TK_RETORNA, TK_ENQUANTO, TK_ID, '[', ']']
-   43          | • TK_SENAO bloco_comandos
+   30 declaracao_variavel_local: TK_VAR TK_ID TK_ATRIB tipo inicializacao_opt •
 
-    TK_SENAO  shift, and go to state 123
-
-    $default  reduce using rule 42 (senao_opt)
-
-    senao_opt  go to state 124
+    $default  reduce using rule 30 (declaracao_variavel_local)
 
 
 State 120
 
-   44 comando_enquanto: TK_ENQUANTO '(' expressao ')' bloco_comandos •
+   42 comando_condicional: TK_SE '(' expressao ')' bloco_comandos • senao_opt
 
-    $default  reduce using rule 44 (comando_enquanto)
+    TK_SENAO  shift, and go to state 124
+
+    $default  reduce using rule 43 (senao_opt)
+
+    senao_opt  go to state 125
 
 
 State 121
 
-   39 lista_argumentos: lista_argumentos ',' expressao •
+   45 comando_enquanto: TK_ENQUANTO '(' expressao ')' bloco_comandos •
 
-    $default  reduce using rule 39 (lista_argumentos)
+    $default  reduce using rule 45 (comando_enquanto)
 
 
 State 122
 
-   31 inicializacao_opt: TK_COM literal •
+   40 lista_argumentos: expressao ',' lista_argumentos •
 
-    $default  reduce using rule 31 (inicializacao_opt)
+    $default  reduce using rule 40 (lista_argumentos)
 
 
 State 123
 
-   16 bloco_comandos: • '[' lista_comandos_opt ']'
-   43 senao_opt: TK_SENAO • bloco_comandos
+   32 inicializacao_opt: TK_COM literal •
 
-    '['  shift, and go to state 29
-
-    bloco_comandos  go to state 125
+    $default  reduce using rule 32 (inicializacao_opt)
 
 
 State 124
 
-   41 comando_condicional: TK_SE '(' expressao ')' bloco_comandos senao_opt •
+   44 senao_opt: TK_SENAO • bloco_comandos
 
-    $default  reduce using rule 41 (comando_condicional)
+    '['  shift, and go to state 30
+
+    bloco_comandos  go to state 126
 
 
 State 125
 
-   43 senao_opt: TK_SENAO bloco_comandos •
+   42 comando_condicional: TK_SE '(' expressao ')' bloco_comandos senao_opt •
 
-    $default  reduce using rule 43 (senao_opt)
+    $default  reduce using rule 42 (comando_condicional)
+
+
+State 126
+
+   44 senao_opt: TK_SENAO bloco_comandos •
+
+    $default  reduce using rule 44 (senao_opt)
